@@ -21,6 +21,11 @@ ARG CUDA
 # Use bash to support string substitution.
 SHELL ["/bin/bash", "-c"]
 
+# Add repo public key
+RUN export this_distro="$(cat /etc/os-release | grep '^ID=' | awk -F'=' '{print $2}')" \
+&& export this_version="$(cat /etc/os-release | grep '^VERSION_ID=' | awk -F'=' '{print $2}' | sed 's/[^0-9]*//g')" \
+&& apt-key adv --fetch-keys "https://developer.download.nvidia.com/compute/cuda/repos/${this_distro}${this_version}/x86_64/3bf863cc.pub"
+
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
       build-essential \
       cmake \
